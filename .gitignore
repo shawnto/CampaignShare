@@ -1,0 +1,14 @@
+# Ideas files
+ideas.txt
+# Compiled files
+*.exe
+/bundles
+
+# db files
+/db/db.go
+
+# webpack stats
+webpack-stats.json
+
+# Node junk
+/node_modules

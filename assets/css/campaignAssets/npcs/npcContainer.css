@@ -1,0 +1,19 @@
+#npcContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+#npcList {
+}
+
+#npcList li{
+  background-color: #96989b;
+  box-shadow: 2px 2px 10px #4f5051;
+  padding-left: 5%;
+}
+
+#npcList h1 {
+  flex-grow: 2;
+}

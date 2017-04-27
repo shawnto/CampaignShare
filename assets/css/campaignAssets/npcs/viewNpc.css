@@ -1,0 +1,36 @@
+#listRow {
+  display: flex
+}
+
+#activeNpcContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#npcDesc {
+  box-shadow: 0px 5px 15px #4f5051;
+  padding-left: 5%;
+
+}
+
+#npcDescription {
+  flex-flow: column;
+  flex-grow: 1;
+  padding-top: 7%;
+}
+
+#nameAndImage {
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+}
+
+#nameAndImage h1 {
+  padding-left: 35%;
+}
+
+#nameAndImage img {
+  height: 800px;
+  overflow: auto;
+}

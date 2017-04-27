@@ -1,0 +1,30 @@
+h1 {
+  font-family: 'Cinzel Decorative', cursive;
+}
+
+li {
+  font-family: 'Cinzel', serif, bold;
+}
+
+ul {
+  list-style-type: none;
+}
+
+lh {
+  font-family: 'Cinzel', serif, bold;
+  font-size: 18px;
+  text-decoration: underline;
+
+}
+
+#filterTags {
+  font-family: 'Cinzel', serif;
+}
+
+p {
+  font-family: 'Amiri', serif;
+}
+
+span {
+  font-family: 'Amiri', serif;
+}
