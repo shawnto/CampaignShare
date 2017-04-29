@@ -1,12 +1,11 @@
 package mapsrequests
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/CampaignShare/db"
 	"net/http"
 	"strings"
+	"github.com/CampaignShare/db/models/maps"
 )
 
 import _ "github.com/go-sql-driver/mysql"
@@ -26,17 +25,6 @@ type MapViewReqBody struct {
 	MapId int
 }
 
-type ReqResponse struct {
-	Id          int
-	MapImage    string
-	Description string
-	DateCreated string
-	FilterTags  string
-	Title       string
-	VotesUp     int
-	VotesDown   int
-	OriginalVersion bool
-}
 
 func GetMaps(rw http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
@@ -45,28 +33,8 @@ func GetMaps(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Invalid JSON")
 	}
-	dbSession, err := sql.Open("mysql", db.DbConnectionString)
-	if err != nil {
-		panic(err.Error())
-	}
-	defer dbSession.Close()
-	rows, err := dbSession.Query("select * from maps")
-	defer rows.Close()
-	var reqResps []ReqResponse
-	for rows.Next() {
-		var reqResp ReqResponse
-		err := rows.Scan(&reqResp.Id, &reqResp.MapImage, &reqResp.Description,
-			&reqResp.DateCreated, &reqResp.FilterTags, &reqResp.Title,
-			&reqResp.VotesUp, &reqResp.VotesDown, &reqResp.OriginalVersion)
-		if err != nil {
-			panic(err.Error())
-		}
-		reqResps = append(reqResps, reqResp)
-	}
-	if err := rows.Err(); err != nil {
-		panic(err.Error())
-	}
-	b, err := json.Marshal(reqResps)
+	m := mapmodel.All()
+	b, err := json.Marshal(m)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
 	}
@@ -81,37 +49,9 @@ func GetFilteredMaps(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Invalid JSON")
 	}
-	dbSession, err := sql.Open("mysql", db.DbConnectionString)
-	if err != nil {
-		panic(err.Error())
-	}
-	defer dbSession.Close()
 	q_string := sanitizeTags(r.FilterTags)
-	rows, err := dbSession.Query("select * from maps where FilterTags regexp (?)",
-		q_string)
-	defer rows.Close()
-	if err != nil {
-		panic(err.Error())
-	}
-	var reqResps []ReqResponse
-	for rows.Next() {
-		var reqResp ReqResponse
-		err := rows.Scan(&reqResp.Id, &reqResp.MapImage, &reqResp.Description,
-			&reqResp.DateCreated, &reqResp.FilterTags, &reqResp.Title,
-			&reqResp.VotesUp, &reqResp.VotesDown, &reqResp.OriginalVersion)
-		if err != nil {
-			panic(err.Error())
-		}
-		reqResps = append(reqResps, reqResp)
-	}
-	if err := rows.Err(); err != nil {
-		panic(err.Error())
-	}
-	if len(reqResps) == 0 {
-		var reqResp ReqResponse
-		reqResps = append(reqResps, reqResp)
-	}
-	b, err := json.Marshal(reqResps)
+	maps := mapmodel.GetByFilterTags(q_string)
+	b, err := json.Marshal(maps)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
 	}
@@ -126,23 +66,8 @@ func GetMapView(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Invalid JSON")
 	}
-	dbSession, err := sql.Open("mysql", db.DbConnectionString)
-	if err != nil {
-		panic(err.Error())
-	}
-	defer dbSession.Close()
-	var reqResp ReqResponse
-	err = dbSession.QueryRow("select * from maps where id=?;", r.MapId).Scan(&reqResp.Id, &reqResp.MapImage, &reqResp.Description,
-		&reqResp.DateCreated, &reqResp.FilterTags, &reqResp.Title,
-		&reqResp.VotesUp, &reqResp.VotesDown, &reqResp.OriginalVersion)
-	switch {
-	case err == sql.ErrNoRows:
-		fmt.Printf("None found")
-	case err != nil:
-		fmt.Printf("Other Error")
-	}
-
-	b, err := json.Marshal(reqResp)
+	m := mapmodel.GetMap(r.MapId)
+	b, err := json.Marshal(m)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
 	}
@@ -150,6 +75,7 @@ func GetMapView(rw http.ResponseWriter, req *http.Request) {
 	rw.Write(b)
 }
 
+// Need to movethis off to an appropriate package for other usage.
 func sanitizeTags(tags string) string {
 	tagsSlice := strings.Split(tags, ",")
 	for i, el := range tagsSlice {
