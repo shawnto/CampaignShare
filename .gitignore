@@ -2,7 +2,8 @@
 ideas.txt
 # Compiled files
 *.exe
-/bundles
+assets/bundles/bundle.js
+
 
 # db files
 /db/db.go
