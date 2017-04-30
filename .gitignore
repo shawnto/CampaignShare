@@ -2,7 +2,9 @@
 ideas.txt
 # Compiled files
 *.exe
-assets/bundles/bundle.js
+
+# Bundles
+/assets/bundles/bundle.js
 
 
 # db files
