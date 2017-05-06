@@ -1,6 +1,5 @@
 import React from 'react'
 import '../../../css/campaigns/scenes/sceneView.css'
-import Style from 'style-it'
 import Draggable from 'react-draggable'
 
 class SceneInteractiveView extends React.Component{
