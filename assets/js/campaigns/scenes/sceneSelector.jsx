@@ -6,7 +6,7 @@ class SceneSelector extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      currentViewType: 0,
+      currentViewType: 0
     }
   }
 
@@ -16,17 +16,20 @@ class SceneSelector extends React.Component{
   }
 
   componentDidMount(){
-
   }
 
   render(){
     const viewType = this.state.currentViewType
+    const scenes = this.props.scenes
+    const activeScene = this.props.activeScene
     if (viewType == 0){
       return(
         <div>
-        <button type="button" onClick={event => this.handleToggleClick(event)}>
-        Toggle View Type </button>
-        <div id="interactiveView"> <InteractiveView /> </div>
+          <button type="button" onClick={event => this.handleToggleClick(event)}>
+              Toggle View Type </button>
+              <div id="interactiveView">
+                  <InteractiveView scenes={scenes} activeScene={activeScene}/>
+              </div>
         </div>
       )
     }
@@ -35,7 +38,7 @@ class SceneSelector extends React.Component{
         <div>
         <button type="button" onClick={event => this.handleToggleClick(event)}>
         Toggle View Type </button>
-        <div id="listView"> <ListView /> </div>
+        <div id="listView"> <ListView scenes={scenes} /> </div>
         </div>
       )
     }

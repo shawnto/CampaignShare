@@ -1,0 +1,15 @@
+#activeScene{
+  width: 75%;
+  padding-left: 12%;
+  padding-top: 5%;
+  justify-content: center;
+  text-align: center;
+}
+
+#activeScene div {
+  background: rgba(19, 58, 127, .6);
+}
+
+#activeScene span {
+  border-bottom: 6px solid rgba(112, 166, 255, .8);
+}
