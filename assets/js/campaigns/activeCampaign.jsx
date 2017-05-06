@@ -3,6 +3,7 @@ import ActiveScene from './activeScene.jsx'
 import SceneSelector from './scenes/sceneSelector.jsx'
 import AssetsBrowser from './assetsBrowser.jsx'
 import Players from './players.jsx'
+import '../../css/campaigns/campaignView.css'
 
 class ActiveCampaign extends React.Component{
   constructor(props){
@@ -42,8 +43,8 @@ class ActiveCampaign extends React.Component{
     return(
       <div id="campaignContainer">
         <div id="activeCampaignView">
-        <SceneSelector scenes={scenes} />
-        <ActiveScene />
+        <SceneSelector scenes={scenes} activeScene={0} />
+        <ActiveScene activeScene={scenes[0]}/>
         </div>
         <div id="assets">
         <AssetsBrowser />
