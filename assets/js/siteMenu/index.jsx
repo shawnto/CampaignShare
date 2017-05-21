@@ -16,7 +16,7 @@ module.exports = class SiteMenu extends React.Component{
       expanded: !prevState.expanded
     }));
   }
-
+    // TODO: Login is current a redirect, want to make it a pop up eventually.
     render(){
         return (
           <div >
@@ -27,6 +27,7 @@ module.exports = class SiteMenu extends React.Component{
               <Link to="#">Campaign Assets</Link>
               </li>
               <li> <Link to='/forums'> Forums </Link></li>
+              <li> <Link to='/login'> Login Page </Link></li>
             </ul>
             <div className="assetsMenu">
             <AssetsMenu expanded={this.state.expanded} />
