@@ -18,7 +18,9 @@ module.exports = {
 
   module: {
     loaders: [
-      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader', query: {presets:['react']}},
+      { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel-loader',
+        query: {presets:['react', 'stage-2'], plugins: ['transform-decorators-legacy']
+      }},
       { test: /\.css$/, loader: 'style-loader!css-loader'},
       { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192'},
     ],

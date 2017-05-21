@@ -17,6 +17,7 @@ import MusicContainer from './campaignAssets/music/musicContainer.jsx'
 import GearContainer from './campaignAssets/gear/gearContainer.jsx'
 import OtherContainer from './campaignAssets/other/otherContainer.jsx'
 import ViewGear from './campaignAssets/gear/viewGear.jsx'
+import Login from './login/login.jsx'
 
 class App extends React.Component{
     constructor(props) {
@@ -45,6 +46,7 @@ class App extends React.Component{
           <Route exact path='/campaigns/:campaignId' component={ViewCampaign} />
           <Route exact path='/campaigns' component={Campaigns} />
           <Route exact path='/forums' component={Forums} />
+          <Route exact path='/login' component={Login} />
         </Switch>
         </div>
         </BrowserRouter>
