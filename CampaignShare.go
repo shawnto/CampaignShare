@@ -3,6 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/CampaignShare/api/assetrequests"
+	"github.com/CampaignShare/api/maps"
+	"github.com/CampaignShare/api/npcs"
+	"github.com/CampaignShare/api/beastiary"
+	"github.com/CampaignShare/api/gear"
+	"github.com/CampaignShare/api/campaigns"
+	"github.com/CampaignShare/api/campaigns/scenes"
+	"github.com/CampaignShare/api/users"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -74,6 +81,11 @@ func apiHandler(rw http.ResponseWriter, req *http.Request) {
 		assetrequests.GetCampaignInstances(rw, req)
 	case strings.Contains(req.URL.Path, "get_campaign_players"):
 		assetrequests.GetCampaignPlayers(rw, req)
+		scenesrequests.GetSceneView(rw, req)
+	case strings.Contains(req.URL.Path, "create_new_user"):
+		usersrequests.CreateNewUser(rw, req)
+	case strings.Contains(req.URL.Path, "validate_password"):
+		usersrequests.ValidateUserPassword(rw, req)
 	default:
 		http.NotFound(rw, req)
 		return
@@ -99,6 +111,8 @@ func main() {
 	http.HandleFunc("/campaigns/scenes/get_scene_view/", apiHandler)
 	http.HandleFunc("/campaigns/get_campaign_instances/", apiHandler)
 	http.HandleFunc("/campaigns/get_campaign_players/", apiHandler)
+	http.HandleFunc("/users/create_new_user/", apiHandler)
+	http.HandleFunc("/users/validate_password/", apiHandler)
 	http.HandleFunc("/", makeHandler(viewHandler))
 	http.ListenAndServe(":8080", nil)
 }
