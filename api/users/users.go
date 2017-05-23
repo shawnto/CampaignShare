@@ -6,6 +6,7 @@ import (
 	"github.com/CampaignShare/db/models/users"
 	"net/http"
   "github.com/CampaignShare/client"
+  "github.com/gorilla/sessions"
 )
 
 
@@ -47,7 +48,7 @@ func CreateNewUser(rw http.ResponseWriter, req *http.Request){
 }
 
 
-func ValidateUserPassword(rw http.ResponseWriter, req *http.Request){
+func ValidateUserPassword(rw http.ResponseWriter, req *http.Request, s *sessions.CookieStore){
   decoder := json.NewDecoder(req.Body)
   var validationReq UserReq
   resp := ValidPassResponse{false, 200}
@@ -58,6 +59,19 @@ func ValidateUserPassword(rw http.ResponseWriter, req *http.Request){
   if err != nil{
     fmt.Println("error marshalling")
   }
+  if resp.Success == true{
+    session, _ := s.Get(req, "cookie-name")
+    session.Values["authenticated"] = true
+  	session.Save(req, rw)
+  }
   rw.Header().Set("Content-Type", "application/json")
 	rw.Write(r)
+}
+
+
+func LogoutUser(rw http.ResponseWriter, req *http.Request, s *sessions.CookieStore){
+  session, _ := s.Get(req, "cookie-name")
+  session["authenticated"] = false
+  session.Save(req, rw)
+
 }
