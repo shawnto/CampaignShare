@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux"
+import {attemptLogin} from '../actions/userManagementActions.js'
 
 @connect((store) => {
   return {
@@ -25,10 +26,8 @@ class Login extends React.Component{
 
   attemptLogin(event){
     const user = this.state.username
-    this.props.dispatch({type: "USER_LOGIN", payload: {
-                                             user: user,
-                                             loggedIn: true
-    }})
+    const pw = this.state.password
+    this.props.dispatch(attemptLogin(user, pw))
   }
 
   logOut(event){

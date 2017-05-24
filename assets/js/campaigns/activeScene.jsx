@@ -12,7 +12,6 @@ class ActiveScene extends React.Component{
   }
   render(){
     const scene = this.props.activeScene
-    console.log(scene)
     if (typeof scene === "undefined"){
         return(
             <div> Loading Scene </div>
