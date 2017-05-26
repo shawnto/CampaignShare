@@ -4,42 +4,31 @@ import SceneSelector from './scenes/sceneSelector.jsx'
 import AssetsBrowser from './assetsBrowser.jsx'
 import Players from './players.jsx'
 import '../../css/campaigns/campaignView.css'
+import {connect} from 'react-redux'
+import {getCampaign, getScenes} from '../actions/campaignViewActions.js'
 
-class ActiveCampaign extends React.Component{
-  constructor(props){
-  super(props)
-  this.state = {
-    activeScene: 0,
-    scenes: [],
-    players: [],
-    gm: '',
-    activeCampaign: {},
-    }
+
+@connect((store) => {
+  return {
+    activeCampaign: store.activeCampaign,
+    activeScene: store.activeScene,
+    scenes: store.scenes,
+    players: store.players,
+    gm: store.gm,
+    loading: store.loading,
   }
-
+})
+class ActiveCampaign extends React.Component{
   componentDidMount(){
     var activeCampaign = {}
     var scenes = []
-    fetch('/campaigns/get_campaign_view/', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({CampaignId: parseInt(this.props['match'].params.campaignId)})
-    }).then(response => response.json())
-      .then(postResp => this.setState({ activeCampaign: postResp }))
-    fetch('/campaigns/scenes/get_scenes/', {
-      method: 'POST',
-      headers: new Headers({
-        'Context-Type': 'application/json'
-      }),
-      body: JSON.stringify({NumberOfEntries: 5, PreviousIndex: 0})
-    }).then(response => response.json())
-      .then(postResp => this.setState({scenes: postResp}))
+    const campaignId = parseInt(this.props['match'].params.campaignId)
+    this.props.dispatch(getCampaign(campaignId))
+    this.props.dispatch(getScenes(5, 0))
   }
 
   render() {
-    const scenes = this.state.scenes
+    const scenes = this.props.activeCampaign.scenes
     return(
       <div id="campaignContainer">
         <div id="activeCampaignView">
