@@ -1,3 +1,13 @@
+var loadingAssets = {
+  type: "GET_ASSETS",
+    payload: {
+      assets: [],
+      currentTerm: '',
+      loading: true
+    }
+  }
+
+
 export function getMaps(numberOfEntries, previousIndex){
   const body = JSON.stringify({NumberOfEntries: numberOfEntries,
                                PreviousIndex: previousIndex})
@@ -94,20 +104,44 @@ export function getBeasts(numOfEntries, prevInd){
   }
 }
 
-export function getGear(numberOfEntries, prevInd){
+export function getGear(numOfEntries, prevInd){
   return function(dispatch){
     dispatch({type: "GET_ASSETS", payload: {
                                   assets: [],
                                   currentTerm: '',
                                   loading: true
     }})
-    fetch('/campaigns/assets/get_beasts/', {
+    fetch('/campaigns/assets/get_gear/', {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json'
       }),
       body: JSON.stringify({numberOfEntries: numOfEntries,
                             previousIndex: prevInd})
+    }).then(response => response.json())
+      .then(postResp => dispatch({type: "GET_ASSETS",
+                                  payload: {
+                                    assets: postResp,
+                                    currentTerm: '',
+                                    loading: false
+                                  }
+                                }))
+  }
+}
+
+export function getCampaigns(numOfEntries, prevId){
+  const body = {
+    NumberOfEntries: numOfEntries,
+    PreviousIndex: prevId
+  }
+  return function(dispatch){
+    dispatch(loadingAssets)
+    fetch('/campaigns/get_campaigns/', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify(body)
     }).then(response => response.json())
       .then(postResp => dispatch({type: "GET_ASSETS",
                                   payload: {
