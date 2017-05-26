@@ -2,8 +2,8 @@ export function getMaps(numberOfEntries, previousIndex){
   const body = JSON.stringify({NumberOfEntries: numberOfEntries,
                                PreviousIndex: previousIndex})
   return function(dispatch) {
-    dispatch({type: "GET_MAPS", payload: {
-                                        maps: [],
+    dispatch({type: "GET_ASSETS", payload: {
+                                        assets: [],
                                         currentTerm: '',
                                         loading: true
     }})
@@ -14,9 +14,9 @@ export function getMaps(numberOfEntries, previousIndex){
       }),
       body: body
     }).then(response => response.json())
-      .then(postResp => dispatch({type: "GET_MAPS",
+      .then(postResp => dispatch({type: "GET_ASSETS",
                                   payload: {
-                                    maps: postResp,
+                                    assets: postResp,
                                     currentTerm: '',
                                     loading: false
                                   }
@@ -36,11 +36,34 @@ export function searchMaps(numberOfEntries, previousIndex, searchTerm){
       }),
       body: body
     }).then(response => response.json())
-      .then(postResp => dispatch({type: "SEARCH_MAPS",
+      .then(postResp => dispatch({type: "SEARCH_ASSETS",
                                   payload: {
-                                    maps: postResp,
+                                    assets: postResp,
                                     currentTerm: searchTerm,
                                     loading: false
+                                  }
+                                }))
+  }
+}
+
+export function getNpcs(numOfEntries, prevInd){
+  return function(dispatch){
+    dispatch({type: "GET_ASSETS", payload: {
+                                        assets: [],
+                                        currentTerm: '',
+                                        loading: true
+    }})
+    fetch('/campaigns/assets/get_npcs/', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({NumberOfEntries: numOfEntries,
+                            PreviousIndex: prevInd})
+    }).then(response => response.json())
+      .then(postResp => dispatch({type: "GET_ASSETS",
+                                  payload: {
+                                    assets: postResp
                                   }
                                 }))
   }

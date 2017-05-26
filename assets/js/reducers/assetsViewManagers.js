@@ -1,17 +1,17 @@
 const initState = {
-  maps: [],
+  assets: [],
   searchTerm: '',
   loading: false,
 }
 
 export default function reducer(state=initState, action){
-  if(action.type === "GET_MAPS"){
-    state = {...state, maps: action.payload.maps,
+  if(action.type === "GET_ASSETS"){
+    state = {...state, assets: action.payload.assets,
                        searchTerm: action.payload.searchTerm,
                        loading: action.payload.loading}
   }
   else if(action.type === "SEARCH_MAPS"){
-    state = {...state, maps: action.payload.maps,
+    state = {...state, assets: action.payload.assets,
                        searchTerm: action.payload.searchTerm,
                        loading: action.payload.loading}
   }

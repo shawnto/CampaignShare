@@ -1,8 +1,9 @@
 import { combineReducers } from "redux"
 
 import user from "./userManagers.js"
-import mapView from "./mapViewManagers.js"
+import assetsView from "./assetsViewManagers.js"
+import activeAsset from "./activeAssetManagers.js"
 
 export default combineReducers({
-  user, mapView
+  user, assetsView, activeAsset
 })

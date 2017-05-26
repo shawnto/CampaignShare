@@ -3,12 +3,27 @@ import {BrowserRouter, Link } from 'react-router-dom';
 import {Route} from 'react-router';
 import Style from 'style-it';
 import '../../css/siteMenu.css'
+import {connect} from 'react-redux'
 
-module.exports = class SiteMenu extends React.Component{
+@connect((store) => {
+  return {
+    user: store.user
+  }
+})
+class SiteMenu extends React.Component{
   constructor(props){
     super(props);
     this.state = {'expanded': false}
     this.handleClick = this.handleClick.bind(this);
+  }
+
+  loginField(user){
+    if (user.length > 0){
+      return user
+    }
+    else{
+      return "Login"
+    }
   }
 
   handleClick(e){
@@ -18,6 +33,7 @@ module.exports = class SiteMenu extends React.Component{
   }
     // TODO: Login is current a redirect, want to make it a pop up eventually.
     render(){
+      const user = this.props.user.user
         return (
           <div >
             <ul id="siteMenu">
@@ -27,7 +43,7 @@ module.exports = class SiteMenu extends React.Component{
               <Link to="#">Campaign Assets</Link>
               </li>
               <li> <Link to='/forums'> Forums </Link></li>
-              <li> <Link to='/login'> Login Page </Link></li>
+              <li> <Link to='/login'> {this.loginField(user)} </Link></li>
             </ul>
             <div className="assetsMenu">
             <AssetsMenu expanded={this.state.expanded} />
@@ -104,3 +120,6 @@ class AssetsMenu extends React.Component {
 
   }
 }
+
+
+export default SiteMenu

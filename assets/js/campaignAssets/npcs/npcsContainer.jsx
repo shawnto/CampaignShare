@@ -1,14 +1,24 @@
 import React from 'react'
 import NpcList from './npcList.jsx'
 import '../../../css/campaignAssets/npcs/npcContainer.css'
+import { connect } from "react-redux"
+import {getNpcs} from '../../actions/assetsViewActions.js'
+
+
 
 // TODO: Implement a reusable tag search component,
 // this feature will be used a lot...
+@connect((store) => {
+  return {
+    assets: store.assetsView.assets,
+    searchTerm: store.assetsView.searchTerm,
+    loading: store.assetsView.loading
+  }
+})
 class NpcsContainer extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      'npcs': [],
       'numberOfEntries': 10,
       'previousIndex': 0,
       'searchTerm': ''
@@ -16,23 +26,16 @@ class NpcsContainer extends React.Component{
   }
 
   componentDidMount(){
-    fetch('/campaigns/assets/get_npcs/', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({NumberOfEntries: this.state.numberOfEntries,
-                            PreviousIndex: this.state.previousIndex})
-    }).then(response => response.json())
-      .then(postList => this.setState({ npcs: postList }));
+    const numOfEntries = this.state.numberOfEntries
+    const prevInd = this.state.prevInd
+    this.props.dispatch(getNpcs(numOfEntries, prevInd))
   }
 
   render(){
-    const npcs = this.state.npcs
+    const npcs = this.props.assets
     return(
       <div id="npcsContainer">
       <NpcList npcs={npcs} />
-
       </div>
     )
   }

@@ -4,20 +4,19 @@ import MapList from './mapList.jsx'
 import TagSearch from '../../globalComponents/tagSearch.jsx'
 import '../../../css/campaignAssets/maps/mapsContainer.css'
 import { connect } from "react-redux"
-import {getMaps, searchMaps} from '../../actions/mapViewActions.js'
+import {getMaps, searchMaps} from '../../actions/assetsViewActions.js'
 
 @connect((store) => {
   return {
-    maps: store.mapView.maps,
-    searchTerm: store.mapView.searchTerm,
-    loading: store.mapView.loading
+    assets: store.assetsView.assets,
+    searchTerm: store.assetsView.searchTerm,
+    loading: store.assetsView.loading
   }
 })
 class MapContainer extends React.Component{
   constructor(props){
     super(props);
-    this.state = {'mapsA': [],
-                  'numberOfEntries': 10,
+    this.state = {'numberOfEntries': 10,
                   'previousIndex': 0,
                   'searchTerm': ''}
   }
@@ -42,7 +41,7 @@ class MapContainer extends React.Component{
   }
 
   render(){
-    const maps = this.props.maps
+    const maps = this.props.assets
     const searchTerm = this.state.searchTerm
     return(
       <div>
