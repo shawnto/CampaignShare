@@ -1,34 +1,37 @@
 import React from 'react'
 import BeastList from './beastiaryList.jsx'
 import '../../../css/campaignAssets/maps/mapsContainer.css'
+import {connect} from 'react-redux'
+import {getBeasts} from '../../actions/assetsViewActions.js'
 
+
+@connect((store) => {
+  return {
+    assets: store.assetsView.assets,
+    searchTerm: store.assetsView.searchTerm,
+    loading: store.assetsView.loading
+  }
+})
 class BeastiaryContainer extends React.Component{
   constructor(props){
-    super(props);
-    this.state = {'beasts': [],
-                  'numberOfEntries': 10,
+    super(props)
+    this.state = {'numberOfEntries': 10,
                   'previousIndex': 0,
                   'searchTerm': ''}
   }
 
   componentDidMount(){
-    fetch('/campaigns/assets/get_beasts/', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({numberOfEntries: this.state.numberOfEntries,
-                            previousIndex: this.state.previousIndex})
-    }).then(response => response.json())
-      .then(postList => this.setState({ beasts: postList }));
+    const n = this.state.numberOfEntries
+    const p = this.state.previousIndex
+    this.props.dispatch(getBeasts(n, p))
   }
 
   render(){
-    const beasts = this.state.beasts
+    const beasts = this.props.assets
     return(
       <div>
       <div id="beastList">
-      <BeastList beasts={this.state.beasts} />
+      <BeastList beasts={beasts} />
       </div>
       </div>
     )

@@ -68,3 +68,53 @@ export function getNpcs(numOfEntries, prevInd){
                                 }))
   }
 }
+
+export function getBeasts(numOfEntries, prevInd){
+  return function(dispatch){
+    dispatch({type: "GET_ASSETS", payload: {
+                                  assets: [],
+                                  currentTerm: '',
+                                  loading: true
+    }})
+    fetch('/campaigns/assets/get_beasts/', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({numberOfEntries: numOfEntries,
+                            previousIndex: prevInd})
+    }).then(response => response.json())
+      .then(postResp => dispatch({type: "GET_ASSETS",
+                                  payload: {
+                                    assets: postResp,
+                                    currentTerm: '',
+                                    loading: false
+                                  }
+                                }))
+  }
+}
+
+export function getGear(numberOfEntries, prevInd){
+  return function(dispatch){
+    dispatch({type: "GET_ASSETS", payload: {
+                                  assets: [],
+                                  currentTerm: '',
+                                  loading: true
+    }})
+    fetch('/campaigns/assets/get_beasts/', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({numberOfEntries: numOfEntries,
+                            previousIndex: prevInd})
+    }).then(response => response.json())
+      .then(postResp => dispatch({type: "GET_ASSETS",
+                                  payload: {
+                                    assets: postResp,
+                                    currentTerm: '',
+                                    loading: false
+                                  }
+                                }))
+  }
+}
