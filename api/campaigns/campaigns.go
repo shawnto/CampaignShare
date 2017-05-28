@@ -51,7 +51,7 @@ type campaignInstanceResp struct{
   DateCreated string
   OriginalVersion int
   BelongsTo int
-  Assets
+  Assets Assets
   Players []int
 }
 

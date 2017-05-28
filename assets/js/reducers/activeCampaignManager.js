@@ -1,6 +1,9 @@
+
+
 const initState = {
   activeCampaign: {},
   activeScene: 0,
+  campaignInstance: {},
   scenes: [],
   players: [],
   gm: '',
@@ -18,6 +21,11 @@ export default function reducer(state=initState, action){
   else if(action.type === "GET_SCENES"){
     state = {...state, scenes: action.payload.scenes,
                        loading: action.payload.loading}
+  }
+
+  else if(action.type === "GET_CAMPAIGN_INSTANCE"){
+    state = {...state,
+                      campaignInstance: action.payload.campaignInstance}
   }
   return state
 }

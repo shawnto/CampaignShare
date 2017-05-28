@@ -5,13 +5,14 @@ import AssetsBrowser from './assetsBrowser.jsx'
 import Players from './players.jsx'
 import '../../css/campaigns/campaignView.css'
 import {connect} from 'react-redux'
-import {getCampaign, getScenes} from '../actions/campaignViewActions.js'
+import {getCampaign, getScenes, getCampaignInstance} from '../actions/campaignViewActions.js'
 
 
 @connect((store) => {
   return {
     activeCampaign: store.activeCampaign,
     activeScene: store.activeScene,
+    campaignInstance: store.campaignInstance,
     scenes: store.scenes,
     players: store.players,
     gm: store.gm,
@@ -23,12 +24,18 @@ class ActiveCampaign extends React.Component{
     var activeCampaign = {}
     var scenes = []
     const campaignId = parseInt(this.props['match'].params.campaignId)
+    // TODO consider making an api call for this info in bulk.
+    // Not a fan of battering the server over and over
     this.props.dispatch(getCampaign(campaignId))
     this.props.dispatch(getScenes(5, 0))
+    this.props.dispatch(getCampaignInstance(campaignId))
   }
 
   render() {
     const scenes = this.props.activeCampaign.scenes
+    const campaignInstance = this.props.activeCampaign.campaignInstance
+    const assets = campaignInstance.Assets
+    const players = campaignInstance.Players
     return(
       <div id="campaignContainer">
         <div id="activeCampaignView">
@@ -36,10 +43,10 @@ class ActiveCampaign extends React.Component{
         <ActiveScene activeScene={scenes[0]}/>
         </div>
         <div id="assets">
-        <AssetsBrowser />
+        <AssetsBrowser assets={assets}/>
         </div>
         <div id="players">
-        <Players />
+        <Players players={players}/>
         </div>
       </div>
     )
