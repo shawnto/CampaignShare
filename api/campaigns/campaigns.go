@@ -1,11 +1,12 @@
 package campaignsrequests
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/CampaignShare/db"
 	"net/http"
+	"github.com/CampaignShare/db/models"
+	"github.com/CampaignShare/db/models/beastiary"
+	"github.com/CampaignShare/db/models/gear"
 )
 
 import _ "github.com/go-sql-driver/mysql"
@@ -18,6 +19,11 @@ type CampaignReqBody struct{
 
 type CampaignViewReqBody struct{
   CampaignId int
+}
+
+
+type cInstanceReqBody struct{
+	CampaignId int
 }
 
 type CampaignResponse struct{
@@ -33,6 +39,22 @@ type CampaignResponse struct{
   Summary string
 }
 
+
+type Assets struct{
+	Beasts []beastiarymodel.Beast
+	Gear []gearmodel.Gear
+}
+
+type campaignInstanceResp struct{
+  Id int
+  CampaignId int
+  DateCreated string
+  OriginalVersion int
+  BelongsTo int
+  Assets
+  Players []int
+}
+
 func GetCampaigns(rw http.ResponseWriter, req *http.Request){
   decoder := json.NewDecoder(req.Body)
   var r CampaignReqBody
@@ -40,33 +62,7 @@ func GetCampaigns(rw http.ResponseWriter, req *http.Request){
   if err != nil{
     fmt.Println("ERR parsing JSON!")
   }
-  dbSession, err := sql.Open("mysql", db.DbConnectionString)
-  if err != nil{
-    fmt.Println("ERR connecting to db")
-  }
-  defer dbSession.Close()
-  var campaignResps []CampaignResponse
-  rows, err := dbSession.Query(`select * from campaigns where OriginalVersion=1`)
-  if err != nil{
-    fmt.Println("ERR getting row")
-    fmt.Println(err.Error())
-  }
-  defer rows.Close()
-  for rows.Next(){
-    var campaign CampaignResponse
-    err := rows.Scan(&campaign.Id, &campaign.DateCreated, &campaign.Synopsis,
-                     &campaign.Thumbnail, &campaign.CreatedBy, &campaign.VotesUp,
-                     &campaign.VotesDown, &campaign.OriginalVersion,
-                     &campaign.Title, &campaign.Summary)
-    if err != nil {
-			panic(err.Error())
-		}
-		campaignResps = append(campaignResps, campaign)
-  }
-  if len(campaignResps) < 1{
-    var campaign CampaignResponse
-    campaignResps = append(campaignResps, campaign)
-  }
+  campaignResps := campaignmodel.All()
   b, err := json.Marshal(campaignResps)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
@@ -82,26 +78,53 @@ func GetCampaignView(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Invalid JSON")
 	}
-	dbSession, err := sql.Open("mysql", db.DbConnectionString)
-	if err != nil {
-		panic(err.Error())
-	}
-	defer dbSession.Close()
-	var campaign CampaignResponse
-	err = dbSession.QueryRow(`select * from campaigns where id=?
-                            and OriginalVersion=1;`, r.CampaignId).Scan(&campaign.Id,
-                   &campaign.DateCreated, &campaign.Synopsis,
-                   &campaign.Thumbnail, &campaign.CreatedBy, &campaign.VotesUp,
-                   &campaign.VotesDown, &campaign.OriginalVersion,
-                   &campaign.Title, &campaign.Summary)
-	switch {
-	case err == sql.ErrNoRows:
-		fmt.Printf("None found")
-	case err != nil:
-		fmt.Printf("Other Error")
-	}
-
+	campaign := campaignmodel.Get(r.CampaignId)
 	b, err := json.Marshal(campaign)
+	if err != nil {
+		fmt.Println("Error parsing JSON")
+	}
+	rw.Header().Set("Content-Type", "application/json")
+	rw.Write(b)
+}
+
+
+func GetCampaignInstances(rw http.ResponseWriter, req *http.Request){
+	decoder := json.NewDecoder(req.Body)
+	var r cInstanceReqBody
+	err := decoder.Decode(&r)
+	if err != nil {
+		fmt.Println("Invalid JSON")
+	}
+	cInstances := campaignmodel.GetInstances(r.CampaignId)
+	var cInstancesResp []campaignInstanceResp
+	if err != nil {}
+	for _, instance := range cInstances{
+		/*
+		Id int
+	  CampaignId int
+	  DateCreated string
+	  OriginalVersion int
+	  BelongsTo int
+	  Assets string
+	  Players []int
+		*/
+		cInstResp := campaignInstanceResp{Id: instance.Id, CampaignId: instance.Id,
+																			DateCreated: instance.DateCreated,
+																			OriginalVersion: instance.OriginalVersion,
+																			BelongsTo: instance.BelongsTo}
+		var players []int
+		var assets Assets
+		p := []byte(instance.Players)
+		a := []byte(instance.Assets)
+		err := json.Unmarshal(a, &assets)
+		if err != nil {}
+		err = json.Unmarshal(p, &players)
+		cInstResp.Players = players
+		cInstResp.Assets = assets
+		if err != nil {}
+		cInstancesResp = append(cInstancesResp, cInstResp)
+	}
+	b, err := json.Marshal(cInstancesResp)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
 	}
