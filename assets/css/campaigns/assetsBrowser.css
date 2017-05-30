@@ -1,0 +1,40 @@
+div.assetTable {
+  height: 400px;
+  width: 100%;
+  position: relative;
+  overflow: auto;
+}
+
+#asset {
+  height: 25%;
+  width: 25%;
+  text-align: center;
+}
+
+div.assetThumb:hover {
+  overflow: visible;
+}
+
+div.assetThumb {
+  overflow: hidden;
+}
+
+#currentExpandedCard img{
+  pointer-events: none;
+}
+#currentExpandedCard{
+  height: 100%;
+  width: 100%;
+}
+
+div.assetGroupItems{
+  width: 25%;
+  background: rgba(5, 24, 56, .9);
+  border-left: 6px solid rgba(112, 166, 255, .8);
+  color: #f7f9ff;
+  text-align: center;
+}
+
+div.assetGroupItems span{
+  pointer-events: none;
+}

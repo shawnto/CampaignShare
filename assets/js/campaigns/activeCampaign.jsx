@@ -34,7 +34,8 @@ class ActiveCampaign extends React.Component{
   render() {
     const scenes = this.props.activeCampaign.scenes
     const campaignInstance = this.props.activeCampaign.campaignInstance
-    const assets = campaignInstance.Assets
+    var assets = campaignInstance.Assets
+    const normalizedAssets = normalizeAssets(assets)
     const players = campaignInstance.Players
     return(
       <div id="campaignContainer">
@@ -43,7 +44,7 @@ class ActiveCampaign extends React.Component{
         <ActiveScene activeScene={scenes[0]}/>
         </div>
         <div id="assets">
-        <AssetsBrowser assets={assets}/>
+        <AssetsBrowser assets={normalizedAssets}/>
         </div>
         <div id="players">
         <Players players={players}/>
@@ -51,6 +52,18 @@ class ActiveCampaign extends React.Component{
       </div>
     )
   }
+}
+
+// Create a unique tableId for each asset to enable.
+function normalizeAssets(assets){
+  var index = 0
+  for (var assetGroup in assets){
+    for (var asset in assets[assetGroup]){
+      assets[assetGroup][asset].TableId = index.toString()
+      index++
+    }
+  }
+  return assets
 }
 
 export default ActiveCampaign
