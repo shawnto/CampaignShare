@@ -1,28 +1,23 @@
 import React from 'react'
 import TypeList from '../typeList.jsx'
 import md from '../../markdown/markdownParse.js'
+import {connect} from 'react-redux'
+import {getActiveBeast} from '../../actions/activeAssetActions'
 
-class ViewBeast extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      activeBeast: {}
-    }
+@connect((store) => {
+  return {
+    activeAsset: store.activeAsset,
+    loading: store.loading,
   }
-
+})
+class ViewBeast extends React.Component{
   componentDidMount(){
-    fetch('/campaigns/assets/get_beast_view/', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({BeastId: parseInt(this.props['match'].params.beastId)})
-    }).then(response => response.json())
-      .then(postResp => this.setState({ activeBeast: postResp }))
+    const beastId = parseInt(this.props['match'].params.beastId)
+    this.props.dispatch(getActiveBeast(beastId))
   }
 
   render(){
-    const activeBeast = this.state.activeBeast
+    const activeBeast = this.props.activeAsset.activeAsset
     return(
       <div id="activeBeastContainer">
       <div id="nameAndImage">

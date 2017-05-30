@@ -2,29 +2,25 @@ import React from 'react'
 import md from '../../markdown/markdownParse.js'
 import TypeList from '../typeList.jsx'
 import '../../../css/campaignAssets/npcs/viewNpc.css'
+import { connect } from "react-redux"
+import {getActiveNpc} from '../../actions/activeAssetActions.js'
 
 
-class ViewNpc extends React.Component{
-  constructor(props){
-    super(props)
-    this.state = {
-      activeNpc: []
-    }
+@connect((store) => {
+  return {
+    activeAsset: store.activeAsset,
+    loading: store.loading,
   }
+})
+class ViewNpc extends React.Component{
 
   componentDidMount(){
-    fetch('/campaigns/assets/get_npc_view/', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({NpcId: parseInt(this.props['match'].params.npcId)})
-    }).then(response => response.json())
-      .then(postResp => this.setState({ activeNpc: postResp }))
+    const npcId = parseInt(this.props['match'].params.npcId)
+    this.props.dispatch(getActiveNpc(npcId))
   }
 
   render(){
-    const activeNpc = this.state.activeNpc
+    const activeNpc = this.props.activeAsset.activeAsset
     return(
       <div id="activeNpcContainer">
       <div id="nameAndImage">

@@ -4,42 +4,39 @@ import SceneSelector from './scenes/sceneSelector.jsx'
 import AssetsBrowser from './assetsBrowser.jsx'
 import Players from './players.jsx'
 import '../../css/campaigns/campaignView.css'
+import {connect} from 'react-redux'
+import {getCampaign, getScenes, getCampaignInstance} from '../actions/campaignViewActions.js'
 
-class ActiveCampaign extends React.Component{
-  constructor(props){
-  super(props)
-  this.state = {
-    activeScene: 0,
-    scenes: [],
-    players: [],
-    gm: '',
-    activeCampaign: {},
-    }
+
+@connect((store) => {
+  return {
+    activeCampaign: store.activeCampaign,
+    activeScene: store.activeScene,
+    campaignInstance: store.campaignInstance,
+    scenes: store.scenes,
+    players: store.players,
+    gm: store.gm,
+    loading: store.loading,
   }
-
+})
+class ActiveCampaign extends React.Component{
   componentDidMount(){
     var activeCampaign = {}
     var scenes = []
-    fetch('/campaigns/get_campaign_view/', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({CampaignId: parseInt(this.props['match'].params.campaignId)})
-    }).then(response => response.json())
-      .then(postResp => this.setState({ activeCampaign: postResp }))
-    fetch('/campaigns/scenes/get_scenes/', {
-      method: 'POST',
-      headers: new Headers({
-        'Context-Type': 'application/json'
-      }),
-      body: JSON.stringify({NumberOfEntries: 5, PreviousIndex: 0})
-    }).then(response => response.json())
-      .then(postResp => this.setState({scenes: postResp}))
+    const campaignId = parseInt(this.props['match'].params.campaignId)
+    // TODO consider making an api call for this info in bulk.
+    // Not a fan of battering the server over and over
+    this.props.dispatch(getCampaign(campaignId))
+    this.props.dispatch(getScenes(5, 0))
+    this.props.dispatch(getCampaignInstance(campaignId))
   }
 
   render() {
-    const scenes = this.state.scenes
+    const scenes = this.props.activeCampaign.scenes
+    const campaignInstance = this.props.activeCampaign.campaignInstance
+    var assets = campaignInstance.Assets
+    const normalizedAssets = normalizeAssets(assets)
+    const players = campaignInstance.Players
     return(
       <div id="campaignContainer">
         <div id="activeCampaignView">
@@ -47,14 +44,26 @@ class ActiveCampaign extends React.Component{
         <ActiveScene activeScene={scenes[0]}/>
         </div>
         <div id="assets">
-        <AssetsBrowser />
+        <AssetsBrowser assets={normalizedAssets}/>
         </div>
         <div id="players">
-        <Players />
+        <Players players={players}/>
         </div>
       </div>
     )
   }
+}
+
+// Create a unique tableId for each asset to enable.
+function normalizeAssets(assets){
+  var index = 0
+  for (var assetGroup in assets){
+    for (var asset in assets[assetGroup]){
+      assets[assetGroup][asset].TableId = index.toString()
+      index++
+    }
+  }
+  return assets
 }
 
 export default ActiveCampaign

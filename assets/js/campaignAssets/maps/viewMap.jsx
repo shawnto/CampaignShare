@@ -2,16 +2,23 @@ import React from 'react'
 //import '../../../css/campaignAssets/maps/activeMap.css'
 import ToggleGrid from '../../globalComponents/toggleGrid.jsx'
 import Style from 'style-it'
+import { connect } from "react-redux"
+import {getActiveMap} from '../../actions/activeAssetActions.js'
 
 
+@connect((store) => {
+  return {
+    activeAsset: store.activeAsset,
+    loading: store.loading,
+  }
+})
 class ViewMap extends React.Component{
   constructor(props){
     super(props);
-    this.state = {'activeMap': {},
-                   context: null,
+    this.state = { context: null,
                    gridSize: {
-                     height: 800,
-                     width: 800
+                   height: 800,
+                   width: 800
                    },
                    gridSizeConst: 10,
                    showGrid: true,
@@ -20,17 +27,11 @@ class ViewMap extends React.Component{
   }
 
   componentDidMount(){
-    fetch('/campaigns/assets/get_map_view/', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({MapId: parseInt(this.props['match'].params.mapId)})
-    }).then(response => response.json())
-      .then(postResp => this.setState({ activeMap: postResp }))
 
     const context = this.refs.canvas.getContext('2d')
     this.setState({context: context})
+    const mapId = parseInt(this.props['match'].params.mapId)
+    this.props.dispatch(getActiveMap(mapId))
   }
 
   drawGrid(){
@@ -80,9 +81,8 @@ class ViewMap extends React.Component{
   //TODO: implement LEFT and TOP positioning for map on mouse drag.
   //TODO: Fix some images causing grid offset.
   render(){
-
-    const activeMap = this.state.activeMap
-    const mapUrl = this.state.activeMap.MapImage
+    const activeMap = this.props.activeAsset.activeAsset
+    const mapUrl = activeMap.MapImage
     // Zoom functionality handled here via variable in style-it.
     // Update this if a better alternative presents itself.
     return Style.it(

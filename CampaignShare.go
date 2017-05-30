@@ -73,6 +73,8 @@ func apiHandler(rw http.ResponseWriter, req *http.Request) {
 		scenesrequests.GetScenes(rw, req)
 	case strings.Contains(req.URL.Path, "get_scene_view"):
 		scenesrequests.GetSceneView(rw, req)
+	case strings.Contains(req.URL.Path, "get_campaign_instances"):
+		campaignsrequests.GetCampaignInstances(rw, req)
 	default:
 		http.NotFound(rw, req)
 		return
@@ -97,6 +99,7 @@ func main() {
 	http.HandleFunc("/campaigns/get_campaign_view/", apiHandler)
 	http.HandleFunc("/campaigns/scenes/get_scenes/", apiHandler)
 	http.HandleFunc("/campaigns/scenes/get_scene_view/", apiHandler)
+	http.HandleFunc("/campaigns/get_campaign_instances/", apiHandler)
 	http.HandleFunc("/", makeHandler(viewHandler))
 	http.ListenAndServe(":8080", nil)
 }

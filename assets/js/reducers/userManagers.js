@@ -14,7 +14,13 @@ export default function reducer(state=initState, action){
   }
   else if(action.type === "USER_LOGIN"){
     state = {...state, loggedIn: action.payload.loggedIn,
-                       user: action.payload.user}
+                       user: action.payload.user,
+                       loading: false}
+  }
+  else if(action.type === "VALIDATING_USER"){
+    state = {...state, loggedIn: action.payload.loggedIn,
+                       user: action.payload.user,
+                       loading: action.payload.loading}
   }
   return state
 }

@@ -1,29 +1,25 @@
 import React from 'react'
 import TypeList from '../typeList.jsx'
 import md from '../../markdown/markdownParse.js'
+import {connect} from 'react-redux'
+import {getActiveGear} from '../../actions/activeAssetActions'
 
-class ViewGear extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      activeGear: {}
-    }
+@connect((store) => {
+  return {
+    activeAsset: store.activeAsset,
+    loading: store.loading,
   }
+})
+class ViewGear extends React.Component{
 
 // TODO getting a list back here for some reason, need to investigate further.
   componentDidMount(){
-    fetch('/campaigns/assets/get_gear_view/', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({GearId: parseInt(this.props['match'].params.gearId)})
-    }).then(response => response.json())
-      .then(postResp => this.setState({ activeGear: postResp[0] }))
+    const gearId = parseInt(this.props['match'].params.gearId)
+    this.props.dispatch(getActiveGear(gearId))
   }
 
   render(){
-    const activeGear = this.state.activeGear
+    const activeGear = this.props.activeAsset.activeAsset
     return(
       <div id="activeGearContainer">
       <div id="nameAndImage">

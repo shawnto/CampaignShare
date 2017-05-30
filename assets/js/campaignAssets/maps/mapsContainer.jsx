@@ -3,59 +3,45 @@ import Style from 'style-it'
 import MapList from './mapList.jsx'
 import TagSearch from '../../globalComponents/tagSearch.jsx'
 import '../../../css/campaignAssets/maps/mapsContainer.css'
+import { connect } from "react-redux"
+import {getMaps, searchMaps} from '../../actions/assetsViewActions.js'
 
+@connect((store) => {
+  return {
+    assets: store.assetsView.assets,
+    searchTerm: store.assetsView.searchTerm,
+    loading: store.assetsView.loading
+  }
+})
 class MapContainer extends React.Component{
   constructor(props){
     super(props);
-    this.state = {'maps': [],
-                  'numberOfEntries': 10,
+    this.state = {'numberOfEntries': 10,
                   'previousIndex': 0,
                   'searchTerm': ''}
   }
 
   componentDidMount(){
-    fetch('/campaigns/assets/get_maps/', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({numberOfEntries: this.state.numberOfEntries,
-                            previousIndex: this.state.previousIndex})
-    }).then(response => response.json())
-      .then(postList => this.setState({ maps: postList }));
-  }
+    const numOfEntries = this.state.numberOfEntries
+    const prevInd = this.state.previousIndex
+    this.props.dispatch(getMaps(numOfEntries, prevInd))
+}
 
   getFilteredList(event){
+      const numOfEntries = this.state.numberOfEntries
+      const prevInd = this.state.previousIndex
       const searchTerm = event.target.value
       this.setState({searchTerm: searchTerm})
       if (searchTerm.includes(",") === true){
-        fetch('/campaigns/assets/get_filtered_maps/', {
-          method: 'POST',
-          headers: new Headers({
-            'Content-Type': 'application/json'
-          }),
-          body: JSON.stringify({NumberOfEntries: this.state.numberOfEntries,
-                                PreviousIndex: this.state.previousIndex,
-                                FilterTags: this.state.searchTerm
-                                })
-        }).then(response => response.json())
-          .then(postList => this.setState({ maps: postList}))
+        this.props.dispatch(searchMaps(numOfEntries, prevInd, searchTerm))
       }
       else if (searchTerm.length === 0){
-        fetch('/campaigns/assets/get_maps/', {
-          method: 'POST',
-          headers: new Headers({
-            'Content-Type': 'application/json'
-          }),
-          body: JSON.stringify({numberOfEntries: this.state.numberOfEntries,
-                                previousIndex: this.state.previousIndex})
-        }).then(response => response.json())
-          .then(postList => this.setState({ maps: postList }));
+        this.props.dispatch(getMaps(numOfEntries, prevInd))
       }
   }
 
   render(){
-    const maps = this.state.maps
+    const maps = this.props.assets
     const searchTerm = this.state.searchTerm
     return(
       <div>
