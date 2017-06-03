@@ -1,10 +1,10 @@
-package beastiaryrequests
+package assetrequests
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"github.com/CampaignShare/db/models/beastiary"
+	"github.com/CampaignShare/db/models"
 )
 
 import _ "github.com/go-sql-driver/mysql"
@@ -26,7 +26,7 @@ func GetBeasts(rw http.ResponseWriter, req *http.Request){
   if err != nil{
     fmt.Println("ERR parsing JSON!")
   }
-	beasts := beastiarymodel.All()
+	beasts := models.AllBeasts()
   b, err := json.Marshal(beasts)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
@@ -42,7 +42,7 @@ func GetBeastView(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Invalid JSON")
 	}
-	beast := beastiarymodel.GetBeast(r.BeastId)
+	beast := models.GetBeast(r.BeastId)
 
 	b, err := json.Marshal(beast)
 	if err != nil {

@@ -5,7 +5,8 @@ import AssetsBrowser from './assetsBrowser.jsx'
 import Players from './players.jsx'
 import '../../css/campaigns/campaignView.css'
 import {connect} from 'react-redux'
-import {getCampaign, getScenes, getCampaignInstance} from '../actions/campaignViewActions.js'
+import {getCampaign, getScenes, getCampaignInstance,
+        getInstancePlayers} from '../actions/campaignViewActions.js'
 
 
 @connect((store) => {
@@ -20,6 +21,10 @@ import {getCampaign, getScenes, getCampaignInstance} from '../actions/campaignVi
   }
 })
 class ActiveCampaign extends React.Component{
+  constructor(props){
+    super(props)
+    this.state = {activeMap: 0}
+  }
   componentDidMount(){
     var activeCampaign = {}
     var scenes = []
@@ -29,6 +34,7 @@ class ActiveCampaign extends React.Component{
     this.props.dispatch(getCampaign(campaignId))
     this.props.dispatch(getScenes(5, 0))
     this.props.dispatch(getCampaignInstance(campaignId))
+    this.props.dispatch(getInstancePlayers(campaignId))
   }
 
   render() {
@@ -36,12 +42,18 @@ class ActiveCampaign extends React.Component{
     const campaignInstance = this.props.activeCampaign.campaignInstance
     var assets = campaignInstance.Assets
     const normalizedAssets = normalizeAssets(assets)
-    const players = campaignInstance.Players
+    const players = this.props.activeCampaign.players
+    const activeMap = this.state.activeMap
+    // Care: maps may not be defined initially, so we pass assets to
+    // allow a check.
     return(
       <div id="campaignContainer">
         <div id="activeCampaignView">
         <SceneSelector scenes={scenes} activeScene={0} />
         <ActiveScene activeScene={scenes[0]}/>
+        </div>
+        <div id="maps">
+        <CampaignMaps assets={assets} activeMap={activeMap} />
         </div>
         <div id="assets">
         <AssetsBrowser assets={normalizedAssets}/>
@@ -51,6 +63,15 @@ class ActiveCampaign extends React.Component{
         </div>
       </div>
     )
+  }
+}
+
+function CampaignMaps(props){
+  if(typeof props.assets != "undefined"){
+    return(<div> Maps </div>)
+  }
+  else{
+    return(<div></div>)
   }
 }
 

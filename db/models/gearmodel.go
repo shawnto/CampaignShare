@@ -1,4 +1,4 @@
-package gearmodel
+package models
 
 import (
 	"fmt"
@@ -21,7 +21,7 @@ type Gear struct{
 }
 
 
-func All() ([]Gear){
+func AllGear() ([]Gear){
   dbSession := sessionmanager.StartSession()
   defer dbSession.Close()
   var gears []Gear

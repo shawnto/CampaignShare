@@ -1,4 +1,4 @@
-package mapmodel
+package models
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ type Map struct {
 }
 
 
-func All() ([]Map){
+func AllMaps() ([]Map){
 	dbSession := sessionmanager.StartSession()
 	defer dbSession.Close()
 	rows, err := dbSession.Query("select * from maps")
@@ -58,7 +58,7 @@ func GetMap(MapId int) (Map){
 }
 
 
-func GetByFilterTags(q_string string) ([]Map){
+func GetMapsByFilterTags(q_string string) ([]Map){
 	dbSession := sessionmanager.StartSession()
 	defer dbSession.Close()
 	rows, err := dbSession.Query("select * from maps where FilterTags regexp (?)",

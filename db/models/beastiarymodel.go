@@ -1,4 +1,4 @@
-package beastiarymodel
+package models
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ type Beast struct{
 	OriginalVersion bool
 }
 
-func All() ([]Beast){
+func AllBeasts() ([]Beast){
   dbSession := sessionmanager.StartSession()
   defer dbSession.Close()
   var beastResps []Beast

@@ -1,10 +1,10 @@
-package scenesrequests
+package assetrequests
 
 import (
   "fmt"
 	"encoding/json"
   "net/http"
-  "github.com/CampaignShare/db/models/scenes"
+  "github.com/CampaignShare/db/models"
 )
 
 type SceneReqBody struct{
@@ -17,9 +17,9 @@ type SceneViewReqBody struct{
 }
 
 func GetScenes(rw http.ResponseWriter, req *http.Request){
-  s := scenemodel.All()
+  s := models.AllScenes()
   if len(s) < 1{
-    var sceneDefault scenemodel.Scene
+    var sceneDefault models.Scene
     s = append(s, sceneDefault)
   }
   b, err := json.Marshal(s)
@@ -37,7 +37,7 @@ func GetSceneView(rw http.ResponseWriter, req *http.Request){
   if err != nil{
     fmt.Printf("ERR decoding json: %s", err.Error())
   }
-  s := scenemodel.GetScene(sceneReq.SceneId)
+  s := models.GetScene(sceneReq.SceneId)
   resp, err := json.Marshal(s)
   if err != nil{
     fmt.Printf("ERR encoding json: %s", err.Error())

@@ -1,12 +1,14 @@
 import React from 'react'
 
 
-class Players extends React.Component{
-  render(){
+function Players(props){
+    const playerThumbs = props.players.map((p) =>
+      <span key={p.Id}>
+        {p.CharacterName}
+      </span>)
     return(
-      <div> Players list </div>
+      <div id='playerThumbs'> {playerThumbs} </div>
     )
   }
-}
 
 export default Players

@@ -27,5 +27,10 @@ export default function reducer(state=initState, action){
     state = {...state,
                       campaignInstance: action.payload.campaignInstance}
   }
+
+  else if(action.type === "GET_INSTANCE_PLAYERS"){
+    state = {...state, players: action.payload.players}
+  }
+
   return state
 }
