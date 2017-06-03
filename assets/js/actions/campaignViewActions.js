@@ -72,3 +72,21 @@ export function getCampaignInstance(campaignId){
                                   }))
   }
 }
+
+
+export function getInstancePlayers(campaignId){
+  return function(dispatch){
+    fetch('/campaigns/get_campaign_players/', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({CampaignId: campaignId})
+    }).then(response => response.json())
+      .then(postResp => dispatch({type: "GET_INSTANCE_PLAYERS",
+                                  payload: {
+                                    players: postResp,
+                                  }
+                                  }))
+  }
+}

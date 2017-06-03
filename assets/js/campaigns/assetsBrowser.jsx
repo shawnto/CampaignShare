@@ -74,7 +74,7 @@ class AssetsBrowser extends React.Component{
     const assetType = this.state.assetType
     return (
       <div id="assetContainer">
-        <h1> Asset Browser </h1>
+        <h1> Asset Table </h1>
         <div id="assetMenu" >
           <button type="button" id="expandMenu" onClick={(event) => this.handleToggle(event)}>
           Expand/Collapse Menu

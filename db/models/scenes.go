@@ -1,4 +1,4 @@
-package scenemodel
+package models
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ type Scene struct{
   Title string
 }
 
-func All() ([]Scene){
+func AllScenes() ([]Scene){
   dbSession := sessionmanager.StartSession()
   defer dbSession.Close()
   var scenes []Scene

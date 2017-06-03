@@ -1,4 +1,4 @@
-package npcmodel
+package models
 
 import (
 	"fmt"
@@ -21,7 +21,7 @@ type Npc struct{
 }
 
 
-func All() ([]Npc){
+func AllNpcs() ([]Npc){
   dbSession := sessionmanager.StartSession()
   defer dbSession.Close()
   var npcs []Npc

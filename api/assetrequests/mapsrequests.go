@@ -1,11 +1,11 @@
-package mapsrequests
+package assetrequests
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
-	"github.com/CampaignShare/db/models/maps"
+	"github.com/CampaignShare/db/models"
 )
 
 import _ "github.com/go-sql-driver/mysql"
@@ -33,7 +33,7 @@ func GetMaps(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Invalid JSON")
 	}
-	m := mapmodel.All()
+	m := models.AllMaps()
 	b, err := json.Marshal(m)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
@@ -50,7 +50,7 @@ func GetFilteredMaps(rw http.ResponseWriter, req *http.Request) {
 		fmt.Println("Invalid JSON")
 	}
 	q_string := sanitizeTags(r.FilterTags)
-	maps := mapmodel.GetByFilterTags(q_string)
+	maps := models.GetMapsByFilterTags(q_string)
 	b, err := json.Marshal(maps)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
@@ -66,7 +66,7 @@ func GetMapView(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Invalid JSON")
 	}
-	m := mapmodel.GetMap(r.MapId)
+	m := models.GetMap(r.MapId)
 	b, err := json.Marshal(m)
 	if err != nil {
 		fmt.Println("Error parsing JSON")

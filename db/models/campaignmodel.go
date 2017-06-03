@@ -1,4 +1,4 @@
-package campaignmodel
+package models
 
 import (
 	"fmt"
@@ -33,8 +33,6 @@ type CampaignInstance struct{
   Assets string
   Players string
 }
-
-
 
 
 func All() ([]Campaign){

@@ -1,10 +1,10 @@
-package gearrequests
+package assetrequests
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"github.com/CampaignShare/db/models/gear"
+	"github.com/CampaignShare/db/models"
 )
 
 import _ "github.com/go-sql-driver/mysql"
@@ -25,7 +25,7 @@ func GetGear(rw http.ResponseWriter, req *http.Request){
   if err != nil{
     fmt.Println("ERR parsing JSON!")
   }
-  gears := gearmodel.All()
+  gears := models.AllGear()
   b, err := json.Marshal(gears)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
@@ -41,7 +41,7 @@ func GetGearView(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Invalid JSON")
 	}
-	gear := gearmodel.GetGear(r.GearId)
+	gear := models.GetGear(r.GearId)
 	b, err := json.Marshal(gear)
 	if err != nil {
 		fmt.Println("Error parsing JSON")

@@ -1,9 +1,9 @@
-package npcsrequests
+package assetrequests
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/CampaignShare/db/models/npcs"
+	"github.com/CampaignShare/db/models"
 	"net/http"
 )
 
@@ -27,7 +27,7 @@ func GetNpcs(rw http.ResponseWriter, req *http.Request){
   if err != nil{
     fmt.Println("ERR parsing JSON!")
   }
-	npcs := npcmodel.All()
+	npcs := models.AllNpcs()
   b, err := json.Marshal(npcs)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
@@ -43,7 +43,7 @@ func GetNpcView(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		fmt.Println("Invalid JSON")
 	}
-	npc := npcmodel.GetNpc(r.NpcId)
+	npc := models.GetNpc(r.NpcId)
 	b, err := json.Marshal(npc)
 	if err != nil {
 		fmt.Println("Error parsing JSON")
