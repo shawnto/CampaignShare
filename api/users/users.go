@@ -3,7 +3,7 @@ package usersrequests
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/CampaignShare/db/models/users"
+	"github.com/CampaignShare/db/models"
 	"net/http"
   "github.com/CampaignShare/client"
   "github.com/gorilla/sessions"
@@ -38,7 +38,7 @@ func CreateNewUser(rw http.ResponseWriter, req *http.Request){
     fmt.Println("ERR parsing JSON!")
   }
   hashedPass := clientsecurity.NewPass(newUser.Password)
-  usermodel.NewUser(newUser.Username, hashedPass)
+  models.NewUser(newUser.Username, hashedPass)
   r, err := json.Marshal(resp)
   if err != nil{
     fmt.Println("error marshalling")
@@ -53,7 +53,7 @@ func ValidateUserPassword(rw http.ResponseWriter, req *http.Request, s *sessions
   var validationReq UserReq
   resp := ValidPassResponse{false, 200}
   err := decoder.Decode(&validationReq)
-  potentialUser := usermodel.GetUser(validationReq.Username)
+  potentialUser := models.GetUser(validationReq.Username)
   resp.Success = clientsecurity.ValidatePassword(validationReq.Password, potentialUser.Password)
   r, err := json.Marshal(resp)
   if err != nil{
