@@ -1,27 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"github.com/CampaignShare/api/assetrequests"
-	"io/ioutil"
+	"github.com/CampaignShare/api/users"
 	"net/http"
 	"regexp"
 	"strings"
+	"github.com/gorilla/sessions"
+)
+
+// TODO secure cookie/encryption all that
+var (
+	key = []byte("super-secret-key")
+	store = sessions.NewCookieStore(key)
 )
 
 type Page struct {
 	Title string
 	Body  []byte
-}
-
-func loadPage(title string) (*Page, error) {
-	filename := title + ".txt"
-	fmt.Printf("LOADING %s", filename)
-	body, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	return &Page{Title: title, Body: body}, nil
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
@@ -40,6 +36,7 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 		fn(w, r, m[2])
 	}
 }
+
 
 // TODO Break this off into a "handlers" folder, along with future handlers.
 func apiHandler(rw http.ResponseWriter, req *http.Request) {
@@ -74,6 +71,12 @@ func apiHandler(rw http.ResponseWriter, req *http.Request) {
 		assetrequests.GetCampaignInstances(rw, req)
 	case strings.Contains(req.URL.Path, "get_campaign_players"):
 		assetrequests.GetCampaignPlayers(rw, req)
+	case strings.Contains(req.URL.Path, "create_new_user"):
+		usersrequests.CreateNewUser(rw, req)
+	case strings.Contains(req.URL.Path, "validate_password"):
+		usersrequests.ValidateUserPassword(rw, req, store)
+	case strings.Contains(req.URL.Path, "logout_user"):
+		usersrequests.LogoutUser(rw, req, store)
 	default:
 		http.NotFound(rw, req)
 		return
@@ -99,6 +102,10 @@ func main() {
 	http.HandleFunc("/campaigns/scenes/get_scene_view/", apiHandler)
 	http.HandleFunc("/campaigns/get_campaign_instances/", apiHandler)
 	http.HandleFunc("/campaigns/get_campaign_players/", apiHandler)
+	http.HandleFunc("/users/create_new_user/", apiHandler)
+	http.HandleFunc("/users/validate_password/", apiHandler)
+	http.HandleFunc("/users/logout_user", apiHandler)
 	http.HandleFunc("/", makeHandler(viewHandler))
+	// TODO ClearHandler(See: gorilla/sessions docs)
 	http.ListenAndServe(":8080", nil)
 }

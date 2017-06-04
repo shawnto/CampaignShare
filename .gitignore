@@ -15,3 +15,6 @@ webpack-stats.json
 
 # Node junk
 /node_modules
+
+# client security
+/client
