@@ -71,7 +71,7 @@ func ValidateUserPassword(rw http.ResponseWriter, req *http.Request, s *sessions
 
 func LogoutUser(rw http.ResponseWriter, req *http.Request, s *sessions.CookieStore){
   session, _ := s.Get(req, "cookie-name")
-  session["authenticated"] = false
+  session.Values["authenticated"] = false
   session.Save(req, rw)
 
 }
